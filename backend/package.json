@@ -4,9 +4,14 @@
   "description": "Fully fledged nodejs api built with microservice architecture",
   "license": "ISC",
   "author": "ayoub nasraoui",
-  "type": "commonjs",
+  "type": "module",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "node src/app.js"
+  },
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.1.0",
+    "pg": "^8.16.3"
   }
 }
