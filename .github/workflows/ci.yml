@@ -1,3 +1,13 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
 steps:
   - name: Checkout repository
     uses: actions/checkout@v4
@@ -24,6 +34,4 @@ steps:
     uses: docker/build-push-action@v6
     with:
       # Assuming your frontend Dockerfile and code live in the 'frontend' directory
-      context: ./frontend
-      push: true
-      tags: ${{ secrets.DOCKERHUB_USERNAME }}/tasksphere-frontend:latest
+      context: ./
