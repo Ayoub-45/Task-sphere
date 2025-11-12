@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tasksphere-frontend-deployment
+  labels:
+    app: tasksphere-frontend
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: tasksphere-frontend
+  template:
+    metadata:
+      labels:
+        app: tasksphere-frontend
+    spec:
+      containers:
+        - name: nextjs-app
+          image: ayoub46/tasksphere-frontend:latest # Replace with your image
+          ports:
+            - containerPort: 3000 # Default Next.js port
+          env:
+            # Set the API URL for the frontend to use the internal service name
+            - name: NEXT_PUBLIC_API_URL
+              value: "http://tasksphere-backend-service:8000"
