@@ -34,4 +34,6 @@ steps:
     uses: docker/build-push-action@v6
     with:
       # Assuming your frontend Dockerfile and code live in the 'frontend' directory
-      context: ./
+      context: ./frontend
+      push: true
+      tags: ${{ secrets.DOCKERHUB_USERNAME }}/tasksphere-backend:latest
