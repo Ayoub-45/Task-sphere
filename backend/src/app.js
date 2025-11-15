@@ -4,6 +4,10 @@ import pool from './db.js';
 import taskRoutes from './routes/tasks.js';
 import cors from "cors"
 const app = express();
+const client = require('prom-client');
+const express = require('express');
+const register = new client.Registry();
+
 app.use(cors())
 app.use(bodyParser.json());
 app.use('/api/tasks', taskRoutes);
@@ -17,5 +21,38 @@ pool.query(`
     description TEXT
   )
 `);
+ 
+
+    // Create a default registry for metrics
+ 
+    // Enable the collection of default metrics
+    client.collectDefaultMetrics({ register });
+
+    // Create a custom counter
+    const httpRequestCounter = new client.Counter({
+        name: 'http_requests_total',
+        help: 'Total number of HTTP requests',
+        labelNames: ['method', 'route', 'code'],
+        registers: [register],
+    });
+
+    // Increment the counter on each request
+    app.use((req, res, next) => {
+        res.on('finish', () => {
+            httpRequestCounter.inc({
+                method: req.method,
+                route: req.path,
+                code: res.statusCode,
+            });
+        });
+        next();
+    });
+
+    // Expose metrics endpoint
+    app.get('/metrics', async (req, res) => {
+        res.set('Content-Type', register.contentType);
+        res.end(await register.metrics());
+    });
+
 
 app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
