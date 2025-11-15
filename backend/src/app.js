@@ -12,8 +12,7 @@ app.use(bodyParser.json());
 app.use('/api/tasks', taskRoutes);
 
 const PORT = process.env.PORT || 5000;
-
-
+const HOST="0.0.0.0"
     // Create a default registry for metrics
  
     // Enable the collection of default metrics
@@ -52,4 +51,4 @@ pool.query(`
     description TEXT
   )
 `);
-app.listen(PORT, () => console.log(`Server running on port ${PORT}`));
+app.listen(PORT,HOST,() => console.log(`Server running on port ${PORT}`));
