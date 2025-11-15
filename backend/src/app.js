@@ -3,7 +3,6 @@ import bodyParser from 'body-parser';
 import pool from './db.js';
 import taskRoutes from './routes/tasks.js';
 import cors from "cors"
-const express = require('express');
 const app = express();
 const client = require('prom-client');
 const register = new client.Registry();
