@@ -1,13 +1,13 @@
 apiVersion: monitoring.coreos.com/v1
 kind: ServiceMonitor
 metadata:
-  name: nodejs-app-monitor
+  name: tasksphere-app-monitor
   labels:
     app: tasksphere-backend
 spec:
   selector:
     matchLabels:
-      app: nodejs-app # Matches the label of your Node.js application's Service
+      app: tasksphere-backend-Service # Matches the label of your Node.js application's Service
   endpoints:
     - port: http # The name of the port exposed by your Node.js application's Service
       path: /metrics

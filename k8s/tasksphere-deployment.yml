@@ -14,7 +14,7 @@ spec:
         app: tasksphere-backend
     spec:
       containers:
-        - name: nodejs-backend
+        - name: tasksphere-backend
           image: ayoub46/tasksphere-backend:latest
           env:
             - name: DB_HOST
