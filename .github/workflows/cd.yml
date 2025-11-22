@@ -22,13 +22,11 @@ jobs:
 
       - name: Update backend image in deployment
         run: |
-          kubectl set image deployment/tasksphere-deployment \
-          backend=${{ secrets.DOCKERHUB_USERNAME }}/tasksphere-backend:latest
+          kubectl set image deployment/tasksphere-deployment=${{ secrets.DOCKERHUB_USERNAME }}/tasksphere-backend:latest
 
       - name: Update frontend image in deployment
         run: |
-          kubectl set image deployment/tasksphere-frontend-deployment \
-          frontend=${{ secrets.DOCKERHUB_USERNAME }}/tasksphere-frontend:latest
+          kubectl set image deployment/tasksphere-frontend-deployment=${{ secrets.DOCKERHUB_USERNAME }}/tasksphere-frontend:latest
 
       - name: Apply all manifests
         run: |
