@@ -36,8 +36,8 @@ jobs:
 
       - name: Wait for rollout to finish
         run: |
-          kubectl rollout status deployment/tasksphere-backend
-          kubectl rollout status deployment/tasksphere-frontend
+          kubectl rollout status deployment/tasksphere-deployment
+          kubectl rollout status deployment/tasksphere-frontend-deployment
 
       - name: Show running resources
         run: |
