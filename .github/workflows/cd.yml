@@ -1,0 +1,43 @@
+name: CD Pipeline (Minikube)
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  deploy:
+    name: Deploy to Local Minikube
+    runs-on: self-hosted
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set Kubernetes context (Minikube)
+        run: |
+          kubectl config use-context minikube
+
+      - name: Update backend image in deployment
+        run: |
+          kubectl set image deployment/tasksphere-backend \
+          backend=${{ secrets.DOCKERHUB_USERNAME }}/tasksphere-backend:latest
+
+      - name: Update frontend image in deployment
+        run: |
+          kubectl set image deployment/tasksphere-frontend \
+          frontend=${{ secrets.DOCKERHUB_USERNAME }}/tasksphere-frontend:latest
+
+      - name: Apply all manifests
+        run: |
+          kubectl apply -f k8s/
+
+      - name: Wait for rollout to finish
+        run: |
+          kubectl rollout status deployment/tasksphere-backend
+          kubectl rollout status deployment/tasksphere-frontend
+
+      - name: Show running resources
+        run: |
+          kubectl get pods
+          kubectl get svc
+          kubectl get deployments
