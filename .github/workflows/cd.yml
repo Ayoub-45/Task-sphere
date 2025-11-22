@@ -20,22 +20,33 @@ jobs:
         run: |
           kubectl config use-context minikube
 
-      - name: Update backend image in deployment
-        run: |
-          kubectl set image deployment/tasksphere-deployment=${{ secrets.DOCKERHUB_USERNAME }}/tasksphere-backend:latest
+      - name: Create Image Tag
+        # Use a unique tag (e.g., commit SHA or run ID) instead of 'latest' for reliable rollbacks
+        id: tag
+        run: echo "IMAGE_TAG=${{ github.sha }}" >> $GITHUB_OUTPUT
 
-      - name: Update frontend image in deployment
+      - name: Substitute Image Tags in Manifests
+        # Replace a placeholder image tag in your k8s YAML files with the actual image and tag
+        # ASSUMPTION: Your k8s YAML files contain a placeholder like 'TASKS_BACKEND_IMAGE_PLACEHOLDER'
         run: |
-          kubectl set image deployment/tasksphere-frontend-deployment=${{ secrets.DOCKERHUB_USERNAME }}/tasksphere-frontend:latest
+          # Replace backend image placeholder
+          sed -i 's|TASKS_BACKEND_IMAGE_PLACEHOLDER|${{ secrets.DOCKERHUB_USERNAME }}/tasksphere-backend:${{ steps.tag.outputs.IMAGE_TAG }}|g' k8s/deployment-backend.yaml
+
+          # Replace frontend image placeholder
+          sed -i 's|TASKS_FRONTEND_IMAGE_PLACEHOLDER|${{ secrets.DOCKERHUB_USERNAME }}/tasksphere-frontend:${{ steps.tag.outputs.IMAGE_TAG }}|g' k8s/deployment-frontend.yaml
 
       - name: Apply all manifests
         run: |
+          # This step will create the deployments if they don't exist, and update them if they do.
           kubectl apply -f k8s/
 
-      - name: Wait for rollout to finish
+      - name: Wait for rollout to finish (Backend)
         run: |
-          kubectl rollout status deployment/tasksphere-deployment
-          kubectl rollout status deployment/tasksphere-frontend-deployment
+          kubectl rollout status deployment/tasksphere-deployment --timeout=5m
+
+      - name: Wait for rollout to finish (Frontend)
+        run: |
+          kubectl rollout status deployment/tasksphere-frontend-deployment --timeout=5m
 
       - name: Show running resources
         run: |
