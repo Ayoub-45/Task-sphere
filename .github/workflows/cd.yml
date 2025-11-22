@@ -30,10 +30,10 @@ jobs:
         # ASSUMPTION: Your k8s YAML files contain a placeholder like 'TASKS_BACKEND_IMAGE_PLACEHOLDER'
         run: |
           # Replace backend image placeholder
-          sed -i 's|TASKS_BACKEND_IMAGE_PLACEHOLDER|${{ secrets.DOCKERHUB_USERNAME }}/tasksphere-backend:${{ steps.tag.outputs.IMAGE_TAG }}|g' k8s/deployment-backend.yaml
+          sed -i 's|TASKS_BACKEND_IMAGE_PLACEHOLDER|${{ secrets.DOCKERHUB_USERNAME }}/tasksphere-backend:${{ steps.tag.outputs.IMAGE_TAG }}|g' k8s/tasksphere-deployment.yml
 
           # Replace frontend image placeholder
-          sed -i 's|TASKS_FRONTEND_IMAGE_PLACEHOLDER|${{ secrets.DOCKERHUB_USERNAME }}/tasksphere-frontend:${{ steps.tag.outputs.IMAGE_TAG }}|g' k8s/deployment-frontend.yaml
+          sed -i 's|TASKS_FRONTEND_IMAGE_PLACEHOLDER|${{ secrets.DOCKERHUB_USERNAME }}/tasksphere-frontend:${{ steps.tag.outputs.IMAGE_TAG }}|g' k8s/tasksphere-frontend-deployment.yml
 
       - name: Apply all manifests
         run: |
